@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 // GET route
 app.get('/', (req, res) => {
   res.send('Welcome to the Test Service');
@@ -11,7 +15,7 @@ app.get('/', (req, res) => {
 app.post('/signal', (req, res) => {
   const message = req.body.message;
   console.log(message);
-  res.send('Message received');
+  res.send(message);
 });
 
 app.listen(port, () => {
