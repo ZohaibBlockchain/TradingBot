@@ -4,11 +4,11 @@ const port = 3000;
 
 // GET route
 app.get('/', (req, res) => {
-  res.send('Welcome');
+  res.send('Welcome to the Test Service');
 });
 
 // POST route
-app.post('/message', (req, res) => {
+app.post('/signal', (req, res) => {
   const message = req.body.message;
   console.log(message);
   res.send('Message received');
