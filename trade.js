@@ -25,7 +25,6 @@ const userData = {
 
 
 export async function main(signal) {
-  console.log(process.env.API_KEY);
   console.info('signal ', signal);
   let NewLeverage = await setleverage();
   console.log(NewLeverage['leverage']);
