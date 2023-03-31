@@ -27,7 +27,6 @@ const userData = {
 export async function main(signal) {
   console.info('signal ', signal);
   let NewLeverage = await setleverage();
-  console.log(userData.side);
   console.log(NewLeverage['leverage']);
 
 
@@ -77,7 +76,7 @@ async function setleverage() {
   try {
     return await binance.futuresLeverage(userData.symbol, leverage);
   } catch (error) {
-
+    console.log(error);
   }
 
 }
