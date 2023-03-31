@@ -1,7 +1,7 @@
 import express from 'express';
 const app = express();
 const port = 3000;
-import { test ,main} from './trade.js';
+import {main} from './trade.js';
 
 import bodyParser from 'body-parser';
 app.use(bodyParser.json());
