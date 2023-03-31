@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 import {main} from './trade.js';
 
-
+main('h');
 
 import bodyParser from 'body-parser';
 app.use(bodyParser.json());
