@@ -27,6 +27,7 @@ const userData = {
 export async function main(signal) {
   console.info('signal ', signal);
   let NewLeverage = await setleverage();
+  console.log('Kuta harami program');
   console.log(NewLeverage['leverage']);
 
 
@@ -74,7 +75,9 @@ export async function main(signal) {
 async function setleverage() {
 
   try {
-    return await binance.futuresLeverage(userData.symbol, leverage);
+    let x = await binance.futuresLeverage(userData.symbol, leverage);
+    console.log(x);
+    return x;
   } catch (error) {
     console.log(error);
   }
