@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
 const app = express();
 const port = 3000;
+import { test ,main} from './trade.js';
 
-
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 app.use(bodyParser.json());
+// app.use(json());
 
 // GET route
 app.get('/', (req, res) => {
@@ -14,8 +15,8 @@ app.get('/', (req, res) => {
 // POST route
 app.post('/signal', (req, res) => {
   const message = req.body.message;
-  console.log(message);
-  res.send(message);
+  main(message);
+  res.sendStatus(200);  
 });
 
 app.listen(port, () => {
