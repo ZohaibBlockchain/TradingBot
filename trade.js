@@ -13,8 +13,8 @@ const userData = {
   side: "long",
   quantity: 0.002,
   currentTrade: false,
-  busy: false,
 };
+
 
 export async function open(signal) {
   console.info("signal ", signal);
@@ -94,10 +94,10 @@ async function CreateNewTrade(signal) {
 
 
 export async function close(signal) {
- if(userData.currentTrade)
- {
-  settlePreviousTrade();
- }else{
-  console.log('No Trade to close!');
- }
+  if (userData.currentTrade) {
+    settlePreviousTrade();
+    userData.currentTrade = false;
+  } else {
+    console.log('No Trade to close!');
+  }
 }
