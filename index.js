@@ -22,3 +22,15 @@ app.post("/signal", (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+
+
+process.on('uncaughtException', function (err) {
+  
+  console.log(err);
+});
+
+process.on('TypeError', function (err) {
+ 
+  console.log(err);
+
+});

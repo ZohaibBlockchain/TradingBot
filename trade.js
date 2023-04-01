@@ -38,6 +38,7 @@ export async function main(signal) {
           userData.currentTrade = true;
           userData.side = signal;
           console.log(res);
+          console.log('Flipped...');
         } else {
           console.log("Error While putting a trade...");
         }
