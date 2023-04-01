@@ -94,23 +94,10 @@ async function CreateNewTrade(signal) {
 
 
 export async function close(signal) {
-  if (!userData.busy) {
-    if (signal == "longClose") {
-      userData.busy = true;
-      let longClose = await binance.futuresMarketSell(userData.symbol, userData.quantity)
-      if (longClose["symbol"] == userData.symbol) {
-        userData.busy = false;
-        userData.currentTrade = false;
-      }
-    } else {
-      userData.busy = true;
-      let shortClose = await binance.futuresMarketBuy(userData.symbol, userData.quantity)
-      if (shortClose["symbol"] == userData.symbol) {
-        userData.busy = false;
-        userData.currentTrade = false;
-      }
-    }
-  } else {
-    console.log('Busy');
-  }
+ if(userData.currentTrade)
+ {
+  settlePreviousTrade();
+ }else{
+  console.log('No Trade to close!');
+ }
 }
