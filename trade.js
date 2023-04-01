@@ -7,11 +7,11 @@ const binance = new Binance().options({
   APISECRET: process.env.API_SECRET,
 });
 
-const leverage = 2;
+const leverage = 5;
 const userData = {
   symbol: "BTCUSDT",
   side: "long",
-  quantity: 0.001,
+  quantity: 0.002,
 
   currentTrade: false,
 };
