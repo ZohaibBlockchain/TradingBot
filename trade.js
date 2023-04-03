@@ -7,48 +7,55 @@ const binance = new Binance().options({
   APISECRET: process.env.API_SECRET,
 });
 
-const leverage = 5;
-const userData = {
-  symbol: "BTCUSDT",
-  side: "long",
-  quantity: 0.002,
-  currentTrade: false,
-};
+export let UD = [];
+export let tradeCounter = 0;
+class instrument {
+  constructor(symbol, side, quantity, leverage) {
+      this.symbol = symbol;
+      this.side = side;
+      this.quantity = quantity;
+      this.currentTrade = false;
+      this.leverage = leverage;
+  }
+}
 
 
-export async function open(signal) {
+
+export async function tradeFuture(signal) {
   console.info("signal ", signal);
   let NewLeverage = await setleverage();
   console.log(NewLeverage["leverage"]);
+  let Instrument = getInstrumentData(signal);
   if (NewLeverage["leverage"] == leverage) {
     //Now leverage is
-    if (userData.currentTrade) {
-      if (userData.side == signal) {
+    if (Instrument.currentTrade) {
+      if (Instrument.side == signal) {
         console.log("Same Direction");
         return;
       }
-
-      let res = await settlePreviousTrade();
+      let res = await settlePreviousTrade(Instrument);
       console.log(res);
-      if (res["symbol"] == userData.symbol) {
+      if (res["symbol"] == Instrument.symbol) {
         //Now create new Order
-        userData.currentTrade = false;
-        let res = await CreateNewTrade(signal);
-        if (res["symbol"] == userData.symbol) {
-          userData.currentTrade = true;
-          userData.side = signal;
+        Instrument.currentTrade = false;
+        let res = await CreateNewTrade(Instrument);
+        if (res["symbol"] == Instrument.symbol) {
+          Instrument.currentTrade = true;
+          Instrument.side = signal;
           console.log(res);
           console.log('Flipped...');
+          tradeCounter++;
         } else {
           console.log("Error While putting a trade...");
         }
       }
     } else {
-      let res = await CreateNewTrade(signal);
+      let res = await CreateNewTrade(Instrument);
       console.log(res);
-      if (res["symbol"] == userData.symbol) {
-        userData.currentTrade = true;
-        userData.side = signal;
+      if (res["symbol"] == Instrument.symbol) {
+        Instrument.currentTrade = true;
+        Instrument.side = signal.side;
+        tradeCounter++;
       } else {
         console.log("Error While putting a trade...");
       }
@@ -64,29 +71,30 @@ async function setleverage() {
   }
 }
 
-async function settlePreviousTrade() {
+async function settlePreviousTrade(Instrument) {
   return new Promise(async (resolve, reject) => {
-    if (userData.side == "long") {
+    if (Instrument.side == "long") {
       resolve(
-        await binance.futuresMarketSell(userData.symbol, userData.quantity)
+        await binance.futuresMarketSell(Instrument.symbol, Instrument.quantity)
       );
     } else {
       resolve(
-        await binance.futuresMarketBuy(userData.symbol, userData.quantity)
+        await binance.futuresMarketBuy(Instrument.symbol, Instrument.quantity)
       );
     }
   });
 }
 
-async function CreateNewTrade(signal) {
+async function CreateNewTrade(Instrument) {
   return new Promise(async (resolve, reject) => {
-    if (signal == "long") {
+    if (Instrument.side == "long") {
       resolve(
-        await binance.futuresMarketBuy(userData.symbol, userData.quantity)
+        await binance.futuresMarketBuy(Instrument.symbol, Instrument.quantity)
       );
     } else {
       resolve(
-        await binance.futuresMarketSell(userData.symbol, userData.quantity)
+        await binance.futuresMarketSell(Instrument.symbol, Instrument.quantity)
+        
       );
     }
   });
@@ -100,4 +108,18 @@ export async function close(signal) {
   } else {
     console.log('No Trade to close!');
   }
+}
+
+
+
+function getInstrumentData(request) {
+  for (let i = 0; i < UD.length; i++) {
+
+      if (UD[i].symbol == request.symbol) {
+          return UD[i];
+      }
+  }
+  let newInstrument = new instrument(request.symbol, request.side, request.quantity, request.currentTrade, request.leverage);
+  UD.push(newInstrument);
+  return newInstrument;
 }
