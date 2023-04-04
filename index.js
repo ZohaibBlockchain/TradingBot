@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 // POST route
 app.post("/tradeFuture", (req, res) => {
   const data = req.body.message;
+  console.log(data);
   tradeFuture(data);
   res.sendStatus(200);
 });
@@ -43,7 +44,7 @@ process.on('TypeError', function (err) {
 
 
 function botCore() {
-  console.clear();
+  // console.clear();
   console.log('Current Instruments are: ',UD.length);
   console.log('BOT Health 100 % and total number of trade are: ',tradeCounter);
   setTimeout(botCore, 5000);
