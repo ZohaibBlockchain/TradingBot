@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 // POST route
-app.post("/signalopen", (req, res) => {
+app.post("/tradeFuture", (req, res) => {
   const data = req.body.message;
   tradeFuture(data);
   res.sendStatus(200);
