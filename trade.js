@@ -23,7 +23,7 @@ class instrument {
 
 export async function tradeFuture(signal) {
   console.info("signal ", signal);
-  let NewLeverage = await setleverage();
+  let NewLeverage = await setleverage(signal);
   console.log(NewLeverage["leverage"]);
   let Instrument = getInstrumentData(signal);
   if (NewLeverage["leverage"] == leverage) {
@@ -63,9 +63,9 @@ export async function tradeFuture(signal) {
   }
 }
 
-async function setleverage() {
+async function setleverage(instrument) {
   try {
-    return await binance.futuresLeverage(userData.symbol, leverage);
+    return await binance.futuresLeverage(instrument.symbol, leverage);
   } catch (error) {
     console.log(error);
   }
