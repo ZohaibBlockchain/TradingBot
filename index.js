@@ -14,8 +14,7 @@ app.get("/", (req, res) => {
 
 // POST route
 app.post("/tradeFuture", (req, res) => {
-  const data = req.body.message;
-  console.log(data);
+  const data = req.body;
   tradeFuture(data);
   res.sendStatus(200);
 });

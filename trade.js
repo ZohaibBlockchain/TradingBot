@@ -26,7 +26,7 @@ export async function tradeFuture(signal) {
   let NewLeverage = await setleverage(signal);
   console.log(NewLeverage["leverage"]);
   let Instrument = getInstrumentData(signal);
-  if (NewLeverage["leverage"] == leverage) {
+  if (NewLeverage["leverage"] == signal.leverage) {
     //Now leverage is
     if (Instrument.currentTrade) {
       if (Instrument.side == signal) {
