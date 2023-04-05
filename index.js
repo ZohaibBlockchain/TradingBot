@@ -46,7 +46,7 @@ function botCore() {
   // console.clear();
   console.log('Current Instruments are: ',UD.length);
   console.log('BOT Health 100 % and total number of trade are: ',tradeCounter);
-  setTimeout(botCore, 5000);
+  setTimeout(botCore, 30000);
 }
 
 botCore();

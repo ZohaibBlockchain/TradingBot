@@ -11,25 +11,31 @@ export let UD = [];
 export let tradeCounter = 0;
 class instrument {
   constructor(symbol, side, quantity, leverage) {
-      this.symbol = symbol;
-      this.side = side;
-      this.quantity = quantity;
-      this.currentTrade = false;
-      this.leverage = leverage;
+    this.symbol = symbol;
+    this.side = side;
+    this.quantity = quantity;
+    this.currentTrade = false;
+    this.leverage = leverage;
   }
 }
 
 
 
 export async function tradeFuture(signal) {
+
   console.info("signal ", signal);
   let NewLeverage = await setleverage(signal);
-  console.log(NewLeverage["leverage"],'LV');
+  console.log(NewLeverage["leverage"], 'LV');
+
   let Instrument = getInstrumentData(signal);
-  if (NewLeverage["leverage"] == signal.leverage) {
+
+  let instrumentIndex = getInstrumentIndex(Instrument);
+  console.log(Instrument);
+  if (NewLeverage["leverage"] == Instrument.leverage) {
     //Now leverage is
+    console.log('y');
     if (Instrument.currentTrade) {
-      if (Instrument.side == signal) {
+      if (Instrument.side == signal.side) {
         console.log("Same Direction");
         return;
       }
@@ -37,11 +43,13 @@ export async function tradeFuture(signal) {
       console.log(res);
       if (res["symbol"] == Instrument.symbol) {
         //Now create new Order
-        Instrument.currentTrade = false;
+        UD[instrumentIndex].currentTrade = false;
+        UD[instrumentIndex].side = signal.side;
+
         let res = await CreateNewTrade(Instrument);
         if (res["symbol"] == Instrument.symbol) {
-          Instrument.currentTrade = true;
-          Instrument.side = signal;
+           UD[instrumentIndex].currentTrade = true;
+           UD[instrumentIndex].side = signal.side;
           console.log(res);
           console.log('Flipped...');
           tradeCounter++;
@@ -53,8 +61,10 @@ export async function tradeFuture(signal) {
       let res = await CreateNewTrade(Instrument);
       console.log(res);
       if (res["symbol"] == Instrument.symbol) {
-        Instrument.currentTrade = true;
-        Instrument.side = signal.side;
+
+        let instrumentIndex = getInstrumentIndex(Instrument);
+        UD[instrumentIndex].currentTrade = true;
+        UD[instrumentIndex].side = signal.side;
         tradeCounter++;
       } else {
         console.log("Error While putting a trade...");
@@ -65,24 +75,21 @@ export async function tradeFuture(signal) {
 
 async function setleverage(instrument) {
   try {
-    console.log(instrument.symbol, instrument.leverage);
-    let res = await binance.futuresLeverage(instrument.symbol, instrument.leverage);
-    console.log(res);
-    return res;
+    return await binance.futuresLeverage(instrument.symbol, instrument.leverage);
   } catch (error) {
     console.log(error);
   }
 }
 
-async function settlePreviousTrade(Instrument) {
+async function settlePreviousTrade(instrument) {
   return new Promise(async (resolve, reject) => {
-    if (Instrument.side == "long") {
+    if (instrument.side == "long") {
       resolve(
-        await binance.futuresMarketSell(Instrument.symbol, Instrument.quantity)
+        await binance.futuresMarketSell(instrument.symbol, instrument.quantity)
       );
     } else {
       resolve(
-        await binance.futuresMarketBuy(Instrument.symbol, Instrument.quantity)
+        await binance.futuresMarketBuy(instrument.symbol, instrument.quantity)
       );
     }
   });
@@ -97,7 +104,7 @@ async function CreateNewTrade(Instrument) {
     } else {
       resolve(
         await binance.futuresMarketSell(Instrument.symbol, Instrument.quantity)
-        
+
       );
     }
   });
@@ -118,11 +125,22 @@ export async function close(signal) {
 function getInstrumentData(request) {
   for (let i = 0; i < UD.length; i++) {
 
-      if (UD[i].symbol == request.symbol) {
-          return UD[i];
-      }
+    if (UD[i].symbol == request.symbol) {
+      return UD[i];
+    }
   }
-  let newInstrument = new instrument(request.symbol, request.side, request.quantity, request.currentTrade, request.leverage);
+  console.log(request);
+  let newInstrument = new instrument(request.symbol, request.side, request.quantity, request.leverage);
   UD.push(newInstrument);
   return newInstrument;
+}
+
+
+function getInstrumentIndex(request) {
+  for (let i = 0; i < UD.length; i++) {
+    if (UD[i].symbol == request.symbol) {
+      return i;
+    }
+  }
+  return undefined;
 }
