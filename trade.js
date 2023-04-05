@@ -33,7 +33,6 @@ export async function tradeFuture(signal) {
   console.log(Instrument);
   if (NewLeverage["leverage"] == Instrument.leverage) {
     //Now leverage is
-    console.log('y');
     if (Instrument.currentTrade) {
       if (Instrument.side == signal.side) {
         console.log("Same Direction");
@@ -58,10 +57,12 @@ export async function tradeFuture(signal) {
         }
       }
     } else {
+      Instrument.quantity = signal.quantity;
+      Instrument.leverage = signal.leverage;
+      Instrument.side = signal.side;
       let res = await CreateNewTrade(Instrument);
       console.log(res);
       if (res["symbol"] == Instrument.symbol) {
-
         let instrumentIndex = getInstrumentIndex(Instrument);
         UD[instrumentIndex].currentTrade = true;
         UD[instrumentIndex].side = signal.side;
@@ -72,6 +73,18 @@ export async function tradeFuture(signal) {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function setleverage(instrument) {
   try {
