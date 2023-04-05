@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 const port = 3000;
-import { tradeFuture,UD,tradeCounter} from "./trade.js";
+import { tradeFuture,UD,tradeCounter,resetBot} from "./trade.js";
 
 import bodyParser from "body-parser";
 app.use(bodyParser.json());
@@ -20,11 +20,10 @@ app.post("/tradeFuture", (req, res) => {
 });
 
 
-// app.post("/signalclose", (req, res) => {
-//   const message = req.body.message;
-//   close(message);
-//   res.sendStatus(200);
-// });
+app.post("/resetBot", (req, res) => {
+  resetBot();
+  res.sendStatus(200);
+});
 
 
 app.listen(port, () => {

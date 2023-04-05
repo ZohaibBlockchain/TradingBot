@@ -157,3 +157,7 @@ function getInstrumentIndex(request) {
   }
   return undefined;
 }
+
+export function resetBot(){
+  UD = [];
+}
