@@ -66,7 +66,9 @@ export async function tradeFuture(signal) {
 async function setleverage(instrument) {
   try {
     console.log(instrument.symbol, instrument.leverage);
-    return await binance.futuresLeverage(instrument.symbol, instrument.leverage);
+    let res = await binance.futuresLeverage(instrument.symbol, instrument.leverage);
+    console.log(res);
+    return res;
   } catch (error) {
     console.log(error);
   }
