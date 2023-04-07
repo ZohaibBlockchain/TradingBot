@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 const port = 3000;
-import { tradeFuture,UD,tradeCounter,resetBot} from "./trade.js";
+import { tradeFuture,UD,tradeCounter,resetBot,tradeEngine} from "./trade.js";
 
 import bodyParser from "body-parser";
 app.use(bodyParser.json());
@@ -42,10 +42,13 @@ process.on('TypeError', function (err) {
 
 
 function botCore() {
-  // console.clear();
+   console.clear();
+   console.log('V3 AI Bot +_+ : ');
   console.log('Current Instruments are: ',UD.length);
   console.log('BOT Health 100 % and total number of trade are: ',tradeCounter);
-  setTimeout(botCore, 30000);
+  
+  tradeEngine();
+  setTimeout(botCore, 1000);
 }
 
 botCore();
